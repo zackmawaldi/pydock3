@@ -33,13 +33,13 @@ class RetrospectiveDataset(object):
         self.decoys_dir_path = decoys_dir_path
 
         #
-        self.num_db2_files_in_positive_class = len(list(TarballFile(self.actives_tgz_file_path).iterate_over_files_tarinfo()))
-        self.num_db2_files_in_negative_class = len(list(TarballFile(self.decoys_tgz_file_path).iterate_over_files_tarinfo()))
+        self.num_db2_files_in_active_class = len(list(TarballFile(self.actives_tgz_file_path).iterate_over_files_tarinfo()))
+        self.num_db2_files_in_decoy_class = len(list(TarballFile(self.decoys_tgz_file_path).iterate_over_files_tarinfo()))
 
         #
-        if self.num_db2_files_in_positive_class == 0:
+        if self.num_db2_files_in_active_class == 0:
             raise Exception(f"No actives found in tarball `{self.actives_tgz_file_path}`. Expected files with extensions: `{self.SUPPORTED_EXTENSIONS}`")
-        if self.num_db2_files_in_negative_class == 0:
+        if self.num_db2_files_in_decoy_class == 0:
             raise Exception(f"No decoys found in tarball `{self.decoys_tgz_file_path}`. Expected files with extensions: `{self.SUPPORTED_EXTENSIONS}`")
 
         #
@@ -47,8 +47,8 @@ class RetrospectiveDataset(object):
         self._extract_tarball(self.decoys_tgz_file_path, self.decoys_dir_path)
 
         #
-        self.num_molecules_in_positive_class = len(list(set([DB2File(os.path.join(self.actives_dir_path, file.name.lstrip('./'))).get_molecule_name() for file in TarballFile(self.actives_tgz_file_path).iterate_over_files_tarinfo()])))
-        self.num_molecules_in_negative_class = len(list(set([DB2File(os.path.join(self.decoys_dir_path, file.name.lstrip('./'))).get_molecule_name() for file in TarballFile(self.decoys_tgz_file_path).iterate_over_files_tarinfo()])))
+        self.num_molecules_in_active_class = len(list(set([DB2File(os.path.join(self.actives_dir_path, file.name.lstrip('./'))).get_molecule_name() for file in TarballFile(self.actives_tgz_file_path).iterate_over_files_tarinfo()])))
+        self.num_molecules_in_decoy_class = len(list(set([DB2File(os.path.join(self.decoys_dir_path, file.name.lstrip('./'))).get_molecule_name() for file in TarballFile(self.decoys_tgz_file_path).iterate_over_files_tarinfo()])))
 
     def _validate_tarball_files(self, tarball_path: str) -> None:
         file_count = 0

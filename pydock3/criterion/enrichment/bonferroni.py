@@ -29,7 +29,7 @@ def get_random_classifier_performance_data(
     - cumul: The cumulative proportion of the observed value under the null hypothesis.
     - pval: The p-value, indicating the statistical significance of the observed value.
 
-    :param n_actives: The number of positive results in the dataset.
+    :param n_actives: The number of active results in the dataset.
     :param tables_dir: The directory where the data tables are stored.
     :return: A DataFrame containing performance data for a random classifier.
     """

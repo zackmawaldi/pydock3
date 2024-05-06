@@ -989,15 +989,15 @@ class DockoptStep(PipelineComponent):
             )
 
             # validate scored molecules
-            num_positive_db2_files_scored = df[df['is_positive'].astype(bool)]['db2_file_path'].nunique()
-            num_negative_db2_files_scored = df[~df['is_positive'].astype(bool)]['db2_file_path'].nunique()
+            num_active_db2_files_scored = df[df['is_active'].astype(bool)]['db2_file_path'].nunique()
+            num_decoy_db2_files_scored = df[~df['is_active'].astype(bool)]['db2_file_path'].nunique()
 
-            if num_positive_db2_files_scored != self.retrospective_dataset.num_db2_files_in_positive_class:
+            if num_active_db2_files_scored != self.retrospective_dataset.num_db2_files_in_active_class:
                 raise Exception(
-                    f"Retrospective dataset has {self.retrospective_dataset.num_db2_files_in_positive_class} DB2 files in positive class but only detected {num_positive_db2_files_scored} while processing retrodock job for task {task_id}")
-            if num_negative_db2_files_scored != self.retrospective_dataset.num_db2_files_in_negative_class:
+                    f"Retrospective dataset has {self.retrospective_dataset.num_db2_files_in_active_class} DB2 files in active class but only detected {num_active_db2_files_scored} while processing retrodock job for task {task_id}")
+            if num_decoy_db2_files_scored != self.retrospective_dataset.num_db2_files_in_decoy_class:
                 raise Exception(
-                    f"Retrospective dataset has {self.retrospective_dataset.num_db2_files_in_negative_class} DB2 files in negative class but only detected {num_negative_db2_files_scored} while processing retrodock job for task {task_id}")
+                    f"Retrospective dataset has {self.retrospective_dataset.num_db2_files_in_decoy_class} DB2 files in decoy class but only detected {num_decoy_db2_files_scored} while processing retrodock job for task {task_id}")
 
             # sort dataframe by total energy score and drop duplicate molecules
             df = sort_by_energy_and_drop_duplicate_molecules(df)
@@ -1007,7 +1007,7 @@ class DockoptStep(PipelineComponent):
 
             # get ROC and calculate normalized LogAUC of this job's docking set-up
             if isinstance(self.criterion, NormalizedLogAUC):  # TODO: generalize `self.criterion` such that this ad hoc check is not necessary
-                booleans = df["is_positive"]
+                booleans = df["is_active"]
                 data_dict[self.criterion.name] = self.criterion.calculate(booleans)
 
             # save data_dict for this job

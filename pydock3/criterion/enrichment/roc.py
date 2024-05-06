@@ -46,21 +46,21 @@ class ROC(object):
         y_coords = []
         num_decoys_witnessed_so_far = 0
         num_actives_witnessed_so_far = 0
-        last_bool_was_negative = False
+        last_bool_was_decoy = False
         for b in self.booleans:
             if b:
                 if num_decoys_witnessed_so_far == self.num_decoys:
-                    break  # last negative has been seen, end of ROC, disregard remaining actives
+                    break  # last decoy has been seen, end of ROC, disregard remaining actives
                 num_actives_witnessed_so_far += 1
-                last_bool_was_negative = False
+                last_bool_was_decoy = False
             else:
-                if not last_bool_was_negative:
+                if not last_bool_was_decoy:
                     x_coord = float(num_decoys_witnessed_so_far / self.num_decoys)
                     y_coord = float(num_actives_witnessed_so_far / self.num_actives)
                     x_coords.append(x_coord)
                     y_coords.append(y_coord)
                 num_decoys_witnessed_so_far += 1
-                last_bool_was_negative = True
+                last_bool_was_decoy = True
         self.x_coords = x_coords  # num points = num_decoys, each ith point represents interval [i/n, (i+1)/n]
         self.y_coords = y_coords
         self.points = [
