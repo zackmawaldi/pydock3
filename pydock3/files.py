@@ -658,9 +658,14 @@ class TarballFile(File):
                 yield member
 
     def iterate_over_files_tarinfo(self, ignore_hidden_files=True) -> Generator[tarfile.TarInfo, None, None]:
+        def remove_prefix(text, prefix):
+            if text.startswith(prefix):
+                return text[len(prefix):]
+            return text
+
         for tarinfo in self.iterate_over_tarinfo():
             if tarinfo.isfile():
-                if not (ignore_hidden_files and tarinfo.name.lstrip('./').startswith(".")):
+                if not (ignore_hidden_files and remove_prefix(tarinfo.name, './').startswith(".")):
                     yield tarinfo
 
     def extract(self, extraction_dir_path: str) -> None:
