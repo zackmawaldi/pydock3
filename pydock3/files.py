@@ -657,10 +657,11 @@ class TarballFile(File):
             for member in tar.getmembers():
                 yield member
 
-    def iterate_over_files_tarinfo(self) -> Generator[tarfile.TarInfo, None, None]:
+    def iterate_over_files_tarinfo(self, ignore_hidden_files=True) -> Generator[tarfile.TarInfo, None, None]:
         for tarinfo in self.iterate_over_tarinfo():
             if tarinfo.isfile():
-                yield tarinfo
+                if not (ignore_hidden_files and tarinfo.name.lstrip('./').startswith(".")):
+                    yield tarinfo
 
     def extract(self, extraction_dir_path: str) -> None:
         if not self.exists:
