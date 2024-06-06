@@ -98,10 +98,14 @@ class DockoptPipelineComponentRunFuncArgSet:  # TODO: rename?
 class Dockopt(Script):
     JOB_DIR_NAME = "dockopt_job"
     CONFIG_FILE_NAME = "dockopt_config.yaml"
+    SIMPLE_CONFIG_FILE_NAME = "simple_dockopt_config.yaml"
     ACTIVES_TGZ_FILE_NAME = "actives.tgz"
     DECOYS_TGZ_FILE_NAME = "decoys.tgz"
     DEFAULT_CONFIG_FILE_PATH = os.path.join(
         os.path.dirname(DOCKOPT_INIT_FILE_PATH), "default_dockopt_config.yaml"
+    )
+    DEFAULT_SIMPLE_CONFIG_FILE_PATH = os.path.join(
+        os.path.dirname(DOCKOPT_INIT_FILE_PATH), "default_simple_dockopt_config.yaml"
     )
 
     def __init__(self) -> None:
@@ -171,6 +175,12 @@ class Dockopt(Script):
         save_path = os.path.join(job_dir.path, self.CONFIG_FILE_NAME)
         DockoptParametersConfiguration.write_config_file(
             save_path, self.DEFAULT_CONFIG_FILE_PATH
+        )
+
+        # write the simple version as well. first, we switch out schema to simple
+        save_path = os.path.join(job_dir.path, self.SIMPLE_CONFIG_FILE_NAME)    
+        DockoptParametersConfiguration.write_config_file(
+            save_path, self.DEFAULT_SIMPLE_CONFIG_FILE_PATH
         )
 
     @handle_run_func.__get__(0)
