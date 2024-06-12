@@ -189,6 +189,7 @@ class Dockopt(Script):
         scheduler: str,
         job_dir_path: str = ".",
         config_file_path: Optional[str] = None,
+        simple_config_file_path: Optional[str] = None,
         actives_tgz_file_path: Optional[str] = None,
         decoys_tgz_file_path: Optional[str] = None,
         retrodock_job_max_reattempts: int = 0,
@@ -203,6 +204,7 @@ class Dockopt(Script):
         force_redock: bool = False,
         force_rewrite_results: bool = False,
         force_rewrite_report: bool = False,
+        advanced_mode: bool = False,
     ) -> None:
         """Run DockOpt job."""
 
@@ -213,6 +215,8 @@ class Dockopt(Script):
         # validate args
         if config_file_path is None:
             config_file_path = os.path.join(job_dir_path, self.CONFIG_FILE_NAME)
+        if simple_config_file_path is None:
+            simple_config_file_path = os.path.join(job_dir_path, self.SIMPLE_CONFIG_FILE_NAME)
         if actives_tgz_file_path is None:
             actives_tgz_file_path = os.path.join(job_dir_path, self.ACTIVES_TGZ_FILE_NAME)
         if decoys_tgz_file_path is None:
@@ -275,6 +279,15 @@ class Dockopt(Script):
         #
         logger.info("Loading config file")
         config = DockoptParametersConfiguration(config_file_path)
+        
+        if not advanced_mode:
+            simple_config = DockoptParametersConfiguration(simple_config_file_path, simple=True)
+            config.override_w_simple_config(simple_config)
+
+            logger.info(f"Running Dockopt using {os.path.basename(simple_config_file_path)} with advanced settings found in {os.path.basename(config_file_path)} (Simple mode)")
+        else:
+            logger.info(f"Running Dockopt using only the settings from {os.path.basename(config_file_path)} (Advacned mode)")
+
 
         #
         config_params_str = "\n".join(
