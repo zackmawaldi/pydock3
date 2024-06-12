@@ -1,0 +1,26 @@
+definitions:
+  steps:
+    list(include('step_list_item'), min=1)
+pipeline:
+  top_n: num()
+
+---
+
+step:
+  top_n: num()
+  parameters:
+    dock_files_generation:
+      thin_spheres_elec:
+        use: bool()
+        distance_to_surface: list(num())
+      thin_spheres_desolv:
+        use: bool()
+        distance_to_surface: list(num())
+    dock_files_modification:
+      matching_spheres_perturbation:
+        use: bool()
+        num_samples_per_matching_spheres_file: num()
+        max_deviation_angstroms: num()
+
+step_list_item:
+  step: include('step')
