@@ -35,7 +35,7 @@ if [ "$dir_name" == "pydock3" ]; then
         git pull
 
         # get dock3 submodule containing `dock64` executable
-        git submodule update --init --recursive 
+        # git submodule update --init --recursive 
     fi
 
     # Get the version from pyproject.toml file
